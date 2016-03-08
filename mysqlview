@@ -1,0 +1,7 @@
+SELECT table1.id, table1.begintime, table1.endtime, table1.version, table1.attachfilename, table1.compareesult,
+
+table2.countername, table2.`data`
+
+from table1 join table2 on table1.id = table2.id
+
+order by table1.id 
