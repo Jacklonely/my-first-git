@@ -1,0 +1,11 @@
+初学者  https://gobyexample.com/
+
+初学者  http://tour.golangtc.com/list
+
+进阶    http://docscn.studygolang.com/doc/effective_go.html
+
+并发编程基础    http://blog.xiayf.cn/2015/05/20/fundamentals-of-concurrent-programming/
+
+深入    https://www.gitbook.com/book/tiancaiamao/go-internals/details
+
+规格书  https://golang.org/ref/spec
