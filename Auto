@@ -1,0 +1,69 @@
+#coding=gbk
+import os
+import time
+import MySQLdb
+
+class MyDB():
+	def __init__(self, host, port, user, passwd, dbName):
+		self.host = host
+		self.port = port
+		self.user = user
+		self.pwd = passwd
+		self.dbName = dbName
+		# print self.host
+	def connect(self):
+		conn = MySQLdb.connect(host=self.host,
+                                  port=self.port,
+                                  user=self.user,
+                                  passwd=self.pwd,
+                                  db=self.dbName,
+                                  charset="gbk")
+		self.conn = conn
+
+	def query(self, sql):
+		self.cursor = self.conn.cursor()
+		self.cursor.execute(sql)
+		array = self.cursor.fetchall()
+		self.cursor.close()
+		self.cursor.close()
+		return array
+
+	def __del__(self):
+		pass
+
+if __name__ == '__main__':
+	obj = MyDB('10.61.26.75', 3306, 'auto', 'auto', 'yanwanqiu');
+	obj.connect()
+	sql = r'select * from testproject_compile_auto'
+	testprojctlist = obj.query(sql)
+	testmap = {}
+
+	select = None
+	while True:
+		os.system('cls')
+		print '**************************auto**************************'
+		for test in testprojctlist:
+			if test[0] and test[1] and test[2] and test[3]:
+				print '\t\t', test[0], '\t\t', test[1]
+				testmap[test[0]] = {'testproject' : test[1], 'cmd' : test[2], 'dir' : test[3]}
+		print '\t\tQ\t\texit'
+		select = raw_input("please select: ")
+		if select in 'Qq':
+			print('This program will exit.')
+			os.system('pause')
+			exit()
+
+		if select.isdigit():
+			iselect = int(select)
+			if iselect in testmap:
+				substr = 'subst r: ' + testmap[iselect]['dir']
+				cmd = testmap[iselect]['cmd']
+				os.system('subst r: /d')
+				# print substr
+				print os.system(substr)
+				os.system(cmd)
+			else:
+				print('input error, please input once again.')
+		else:
+			print('input error, please input once again.')
+		os.system('pause')
