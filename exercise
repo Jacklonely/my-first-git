@@ -1,0 +1,286 @@
+LinkNode.h
+
+#ifndef HC74565BD_EA16_46D0_8E3E_E23D1A050DE4
+#define HC74565BD_EA16_46D0_8E3E_E23D1A050DE4
+
+#include <string>
+
+typedef unsigned char U8;
+#define SIZE 20
+
+#define ENGLISH 0
+#define MATH 1
+#define COMPUTER 2
+
+
+struct StudentInfo
+{
+    char id[SIZE];
+    char department[SIZE];
+    char name[SIZE];
+    char sex[SIZE];
+    float english;
+    float math;
+    float computer;
+	float average;
+};
+
+typedef struct Node
+{
+	StudentInfo studentInfo;
+	struct Node* next;
+}LNode;
+
+
+extern LNode *CreateList();
+extern void AddNode(LNode *head, StudentInfo& studentInfo);
+extern void PrintNode(LNode *head, int id);
+extern void PrintList(LNode *head);
+extern int GetLengthOfList(LNode* head);
+extern float ComputerSubjectAvgScore(LNode* head, int subjectFlag);
+extern void SortByAverageScore(LNode* head);
+
+extern void DestoryList(LNode* head);
+
+#endif
+
+LinkNode.cpp
+
+#include "LinkNode.h"
+
+LNode *CreateList()
+{
+	LNode *head = NULL;
+	
+	head = (LNode *)malloc(sizeof(LNode));
+	if ( NULL == head )
+	{
+		printf("malloc memory error!\n");
+		return NULL;
+	}
+	head->next = NULL;
+	
+	return head;
+}
+
+void AddNode(LNode* head, StudentInfo& studentInfo)
+{
+	LNode* newNode = NULL;
+	
+	newNode = (LNode*)malloc(sizeof(LNode));
+	if( NULL == newNode )
+	{
+		printf("malloc memory error!\n");
+		return;
+	}
+	
+	memcpy(newNode->studentInfo.id, studentInfo.id, SIZE);
+	memcpy(newNode->studentInfo.department, studentInfo.department, SIZE);
+	memcpy(newNode->studentInfo.name, studentInfo.name, SIZE);
+	memcpy(newNode->studentInfo.sex, studentInfo.sex, SIZE);
+	newNode->studentInfo.english = studentInfo.english;
+	newNode->studentInfo.math = studentInfo.math;
+	newNode->studentInfo.computer = studentInfo.computer;
+	newNode->studentInfo.average = (studentInfo.english + studentInfo.math + studentInfo.computer) / 3;
+
+	newNode->next = NULL;
+
+	// 找到单链表的最后一个节点
+	LNode *p = head;
+	while (p->next != NULL)
+	{
+		p = p->next;
+	}
+	
+	// 将最后这个节点的next指向新节点
+	p->next = newNode;
+}
+
+void PrintNode(LNode *head, int id)
+{
+
+}
+
+void PrintList(LNode* head)
+{
+	LNode* tail;
+	printf("学号	系别	姓名	性别	英语	高数	计算机\n");
+	//空链表or 只有一个头结点
+	if( NULL == head || NULL == head->next )
+	{
+		printf("Empty List!\n");
+		return;
+	}
+
+	//pass the head node
+	tail = head->next;
+	//遍历整个链表
+	while( tail != NULL )
+	{
+		printf("%s %s %s %s %0.0f %0.0f %0.0f\n", 
+										tail->studentInfo.id, 
+										tail->studentInfo.department, 
+										tail->studentInfo.name,
+										tail->studentInfo.sex,
+										tail->studentInfo.english,
+										tail->studentInfo.math,
+										tail->studentInfo.computer);
+		tail = tail->next;
+	}
+}
+
+int GetLengthOfList(LNode* head)
+{
+	int len = 0;
+
+	//空链表or 只有一个头结点
+	if( NULL == head || NULL == head->next )
+	{
+		printf("Empty List!\n");
+		return 0;
+	}
+
+	while (head != NULL)
+	{
+		len++;
+		head = head->next;
+	}
+	return len-1;
+}
+
+float ComputerSubjectAvgScore(LNode* head, int subjectFlag)
+{
+	int len = GetLengthOfList(head);
+	if (len == 0)
+	{
+		printf("Empty List!\n");
+		return 0;
+	}
+
+	float score;
+	float sum = 0;
+	head = head->next;
+	
+	while (head != NULL)
+	{
+		switch (subjectFlag)
+		{
+		case 0:
+			score = head->studentInfo.english;
+			break;
+		case 1:
+			score = head->studentInfo.math;
+			break;
+		case 2:
+			score = head->studentInfo.computer;
+			break;
+		default:
+			score = 0;
+			printf("The subject is not exists, please check!!!");
+			break;
+		}
+		sum += score;
+		head = head->next;
+	}
+
+	return sum/len;
+}
+
+
+
+void DestoryList(LNode* head)
+{
+
+}
+
+Test.cpp
+
+/*
+ * Test.cpp
+ *
+ *  Created on: Oct 12, 2016
+ *      Author: xxx
+ */
+
+#include <stdio.h>
+
+#include "LinkNode.h"
+
+StudentInfo studentInfo;
+void setStudentInfo();
+
+
+void setStudentInfo(char* id,
+					char* department,
+					char* name,
+					char* sex,
+					float english,
+					float math,
+					float computer)
+{
+	memcpy(studentInfo.id, id, SIZE);
+	memcpy(studentInfo.department, department, SIZE);
+	memcpy(studentInfo.name, name, SIZE);
+	memcpy(studentInfo.sex, sex, SIZE);
+	studentInfo.english = english;
+	studentInfo.math = math;
+	studentInfo.computer = computer;
+}
+
+int main()
+{
+	printf("main start----\n");
+
+	LNode* head = CreateList();
+	
+	setStudentInfo("02128", "机械", "杨过 ",	"男", 64, 56, 74);
+	AddNode(head, studentInfo);
+	setStudentInfo("02120", "计算机", "赵海明",	"男", 51, 63, 84);
+	AddNode(head, studentInfo);
+	setStudentInfo("02119", "计算机", "张李敏",	"男", 76, 87, 56);
+	AddNode(head, studentInfo);
+	setStudentInfo("02127", "机械",	"韦小宝", "男",	75,	75,	72);
+	AddNode(head, studentInfo);
+	setStudentInfo("02114", "外语",	"姜波",	"男", 79, 76, 68);
+	AddNode(head, studentInfo);
+	setStudentInfo("02126", "机械",	"吴应雄", "男",	76,	77,	70);
+	AddNode(head, studentInfo);
+	setStudentInfo("02113", "外语",	"于滔",	"女",	81,	56,	87);
+	AddNode(head, studentInfo);
+	setStudentInfo("02125", "机械",	"王五",	"男",	86,	74,	64);
+	AddNode(head, studentInfo);
+	setStudentInfo("02118", "计算机",	"徐凤东",	"男",	79,	80,	66);
+	AddNode(head, studentInfo);
+	setStudentInfo("02124", "机械",	"李四",	"女",	79,	79,	68);
+	AddNode(head, studentInfo);
+	setStudentInfo("02123", "机械",	"张三",	"男",	77,	77,	73);
+	AddNode(head, studentInfo);
+	setStudentInfo("02112", "外语",	"刘泽宏",	"男",	77,	74,	77);
+	AddNode(head, studentInfo);
+	setStudentInfo("02122", "机械",	"贺军委",	"女",	76,	78,	76);
+	AddNode(head, studentInfo);
+	setStudentInfo("02117", "计算机",	"于晨  ",	"女",	78,	78,	79);
+	AddNode(head, studentInfo);
+	setStudentInfo("02116", "计算机",	"刘立彪",	"男",	78,	79,	79);
+	AddNode(head, studentInfo);
+	setStudentInfo("02115", "计算机",	"叶震伟",	"男",	91,	74,	78);
+	AddNode(head, studentInfo);
+	setStudentInfo("02110", "外语",	"王志平",	"女",	85,	78,	81);
+	AddNode(head, studentInfo);
+	setStudentInfo("02111", "外语",	"黄莺",	"女",	82,	78,	84);
+	AddNode(head, studentInfo);
+	setStudentInfo("02121", "机械",	"王文彬",	"男",	91,	87,	94);
+	AddNode(head, studentInfo);
+    
+
+	// PrintList(head);
+
+	// printf("The length of list is %d.\n", GetLengthOfList(head));
+	
+	printf("The english average score is %0.1f.\n", ComputerSubjectAvgScore(head, ENGLISH));
+	printf("The math average score is %0.1f.\n", ComputerSubjectAvgScore(head, MATH));
+	printf("The computer average score is %0.1f.\n", ComputerSubjectAvgScore(head, COMPUTER));
+
+
+    return 0;
+}
