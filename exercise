@@ -13,7 +13,7 @@ typedef unsigned char U8;
 #define COMPUTER 2
 
 
-struct StudentInfo
+typedef struct StudentInfo
 {
     char id[SIZE];
     char department[SIZE];
@@ -23,7 +23,7 @@ struct StudentInfo
     float math;
     float computer;
 	float average;
-};
+}Student;
 
 typedef struct Node
 {
@@ -38,7 +38,7 @@ extern void PrintNode(LNode *head, int id);
 extern void PrintList(LNode *head);
 extern int GetLengthOfList(LNode* head);
 extern float ComputerSubjectAvgScore(LNode* head, int subjectFlag);
-extern void SortByAverageScore(LNode* head);
+extern LNode* SortByAverageScore(LNode* head);
 
 extern void DestoryList(LNode* head);
 
@@ -104,7 +104,7 @@ void PrintNode(LNode *head, int id)
 void PrintList(LNode* head)
 {
 	LNode* tail;
-	printf("学号	系别	姓名	性别	英语	高数	计算机\n");
+	printf("学号      系别    姓名  性别  英语    高数    计算机 avg\n");
 	//空链表or 只有一个头结点
 	if( NULL == head || NULL == head->next )
 	{
@@ -117,14 +117,15 @@ void PrintList(LNode* head)
 	//遍历整个链表
 	while( tail != NULL )
 	{
-		printf("%s %s %s %s %0.0f %0.0f %0.0f\n", 
+		printf("%s %8s %8s %2s %4.0f %4.0f %4.0f %4.0f\n", 
 										tail->studentInfo.id, 
 										tail->studentInfo.department, 
 										tail->studentInfo.name,
 										tail->studentInfo.sex,
 										tail->studentInfo.english,
 										tail->studentInfo.math,
-										tail->studentInfo.computer);
+										tail->studentInfo.computer,
+										tail->studentInfo.average);
 		tail = tail->next;
 	}
 }
@@ -186,11 +187,99 @@ float ComputerSubjectAvgScore(LNode* head, int subjectFlag)
 	return sum/len;
 }
 
+LNode* SortByAverageScore(LNode* head)
+{
+	//空链表or 只有一个头结点
+	if( NULL == head || NULL == head->next )
+	{
+		printf("Empty List!\n");
+		return NULL;
+	}
+	
+	LNode* p = head->next;
+	LNode* p_pre = p;
+	bool flag = false;   //用于标记是否有交换，当数组有序的时候，提高判断效率
+	
+	while( p_pre->next != NULL )
+	{
+		float temp = p_pre->studentInfo.average;
+		p = p->next;
+		while (p)
+		{    
+			if (temp >= (p->studentInfo.average))
+			{
+				p = p->next;
+				continue;
+			}
+			else
+			{
+				char ctemp[SIZE] = {0};
+				memcpy(ctemp, p->studentInfo.id, SIZE);
+				memcpy(p->studentInfo.id, p_pre->studentInfo.id, SIZE);
+				memcpy(p_pre->studentInfo.id, ctemp, SIZE);
 
+				memcpy(ctemp, p->studentInfo.department, SIZE);
+				memcpy(p->studentInfo.department, p_pre->studentInfo.department, SIZE);
+				memcpy(p_pre->studentInfo.department, ctemp, SIZE);
+
+				memcpy(ctemp, p->studentInfo.name, SIZE);
+				memcpy(p->studentInfo.name, p_pre->studentInfo.name, SIZE);
+				memcpy(p_pre->studentInfo.name, ctemp, SIZE);
+
+				memcpy(ctemp, p->studentInfo.sex, SIZE);
+				memcpy(p->studentInfo.sex, p_pre->studentInfo.sex, SIZE);
+				memcpy(p_pre->studentInfo.sex, ctemp, SIZE);
+
+				float temp_change;
+				temp_change = p->studentInfo.average;
+				p->studentInfo.average = p_pre->studentInfo.average;
+				p_pre->studentInfo.average = temp_change;
+
+				temp_change = p->studentInfo.english;
+				p->studentInfo.english = p_pre->studentInfo.english;
+				p_pre->studentInfo.english = temp_change;
+
+				temp_change = p->studentInfo.math;
+				p->studentInfo.math = p_pre->studentInfo.math;
+				p_pre->studentInfo.math = temp_change;
+
+				temp_change = p->studentInfo.computer;
+				p->studentInfo.computer = p_pre->studentInfo.computer;
+				p_pre->studentInfo.computer = temp_change;				
+
+				p = p->next;
+
+
+				flag = true;
+			}
+			if (flag == false)
+			{
+				return head;
+			}
+		}		
+		p_pre = p_pre->next;
+		p = p_pre;
+	}
+	return head;
+}
 
 void DestoryList(LNode* head)
 {
+	//空链表or 只有一个头结点
+	if( NULL == head || NULL == head->next )
+	{
+		printf("Empty List!\n");
+		return;
+	}
 
+	LNode* p = head->next;
+	LNode* pre;
+	while (p)
+	{
+		pre = p;
+		p = p->next;
+		free(pre);
+	}
 }
 
 Test.cpp
@@ -273,13 +362,19 @@ int main()
 	AddNode(head, studentInfo);
     
 
-	// PrintList(head);
+	PrintList(head);
 
-	// printf("The length of list is %d.\n", GetLengthOfList(head));
+	printf("The length of list is %d.\n", GetLengthOfList(head));
 	
 	printf("The english average score is %0.1f.\n", ComputerSubjectAvgScore(head, ENGLISH));
 	printf("The math average score is %0.1f.\n", ComputerSubjectAvgScore(head, MATH));
 	printf("The computer average score is %0.1f.\n", ComputerSubjectAvgScore(head, COMPUTER));
+	
+	SortByAverageScore(head);
+
+	PrintList(head);
+
+	DestoryList(head);
 
 
     return 0;
