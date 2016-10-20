@@ -1,0 +1,134 @@
+Cube.h
+
+#ifndef HE5415592_9D1B_4BE2_840F_ECE8971F9D70
+#define HE5415592_9D1B_4BE2_840F_ECE8971F9D70
+
+#include "Rectangle.h"
+
+struct Cube : Rectangle
+{
+	Cube();
+	Cube(int length, int width, int height);
+	~Cube();
+
+	int getHeight() const;
+	int getVolume() const;
+private:
+	int height;
+};
+
+#endif
+
+Rectangle.h
+
+#ifndef H3C339676_FD9D_4D89_8647_3C4EE579B720
+#define H3C339676_FD9D_4D89_8647_3C4EE579B720
+
+struct Rectangle
+{
+	Rectangle();
+	Rectangle(int length, int width);
+	~Rectangle();
+	int getLength() const;
+	int getWidth() const;
+	int getAera() const;
+private:
+	
+	int length;
+	int width;
+};
+
+#endif
+
+Cube.cpp
+
+#include "Cube.h"
+
+#include <stdio.h>
+
+Cube :: Cube()
+{
+
+}
+
+Cube :: Cube(int length, int width, int height)
+: Rectangle(length, width),
+  height(height)
+{
+
+}
+
+Cube :: ~Cube()
+{
+
+}
+
+int Cube :: getHeight() const
+{
+	return height;
+}
+
+int Cube :: getVolume() const
+{
+	printf("The Cube length: %d, width: %d, height: %d.\n", getLength(), getWidth(), height);
+	return getAera() * height;
+}
+
+
+Rectangle.cpp
+
+#include "Rectangle.h"
+
+Rectangle :: Rectangle()
+{
+
+}
+
+Rectangle :: Rectangle(int length, int width)
+: length(length),
+  width(width)
+{
+
+}
+
+Rectangle :: ~Rectangle()
+{
+
+}
+
+int Rectangle :: getLength() const
+{
+	return length;
+}
+
+int Rectangle :: getWidth() const
+{
+	return width;
+}
+
+int Rectangle :: getAera() const
+{
+	return length * width;
+}
+
+Test.cpp
+
+#include "Cube.h"
+#include "Rectangle.h"
+
+#include <assert.h>
+
+int main()
+{
+// 	Rectangle rectangle= Rectangle(2, 3);
+// 
+// 	assert(2 == rectangle.getLength());
+// 	assert(3 == rectangle.getWidth());
+// 	assert(6 == rectangle.getAera());
+// 	
+	Cube cube = Cube(3, 4, 5);
+	assert(3 == cube.getLength());
+	assert(4 == cube.getWidth());
+	assert(60 == cube.getVolume());
+	return 0;
+}
