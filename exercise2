@@ -1,0 +1,65 @@
+Exercise2.h
+
+#ifndef H5CB1DA9A_7D5A_4875_8DB7_0C6D06398F87
+#define H5CB1DA9A_7D5A_4875_8DB7_0C6D06398F87
+
+
+#define ARRAYSIZE 5
+
+typedef struct Student 
+{
+	int id;
+	int score;
+}Stu;
+
+#endif
+
+Exercise2.cpp
+
+#include "Exercise2.h"
+
+#include <stdio.h>
+
+
+void max(Stu* stu, int len)
+{
+	if (stu == NULL)
+	{
+		printf("The stu point is NULL, please check!\n");
+		return;
+	}
+
+	int maxScore = 0;
+	Stu* pMax = NULL;
+
+	for (int loop = 0; loop < len; )
+	{
+		if (stu->score >= maxScore)
+		{
+			maxScore = stu->score;
+			pMax = stu;
+		}
+		printf("loop: %d, id: %d, score: %d\n", loop, stu->id, stu->score);
+		loop++;
+		stu++;
+	}
+	
+	if (pMax != NULL)
+	{
+		printf("The max is id: %d, maxScore: %d\n", pMax->id, pMax->score);
+	}
+}
+
+int main()
+{
+	Stu stu[ARRAYSIZE] = {
+							{1, 80}, 
+							{3, 76}, 
+							{6, 86}, 
+							{4, 90}, 
+							{2, 99}
+						};
+
+	max(stu, ARRAYSIZE);
+	return 0;
+}
